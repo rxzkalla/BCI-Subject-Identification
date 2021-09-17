@@ -22,15 +22,15 @@ from keras import metrics
 from imblearn.over_sampling import SMOTE
 from sklearn.metrics import precision_recall_curve
 
-# 1. get ica, make runs_set
+#Create the task lists each corresponding to a motor movement
 runs_set = []
 
-task1 = [3,7,11]
+task1 = [3,7,11] 
 task2 = [4,8,12]
 task3 = [5,9,13]
 task4 = [6,10,14]
 
-# the ica function
+# ICA function  that converts raw data to processed data
 def getIca(subject, runs):
     raw_fnames = eegbci.load_data(subject, runs)
     raw = concatenate_raws([read_raw_edf(f, preload=True) for f in raw_fnames])
@@ -47,7 +47,7 @@ def getIca(subject, runs):
     return icaArray
 
 
-# create the runs_set
+# Create the motor movement passkeys from the processed data
 for i in range(1,108):
     hand_set = []
     feet_set = []
@@ -69,7 +69,7 @@ for i in range(1,108):
 
 
 
-# 2. SMOTE resample to have 1:1
+# 2. SMOTE resample to increase the amount of training data
 data = runs_set
 # the smote function
 def smote_resample(x,y):
@@ -77,7 +77,7 @@ def smote_resample(x,y):
     sx, sy = smote.fit_resample(x, y)
     return sx, sy
 
-# get x and y
+# Get x and y for the classifier
 x,y = [],[]
 for i in range(len(data)):
     features = np.array([feature for feature in data[i][0]]).flatten()
@@ -88,10 +88,10 @@ for i in range(len(data)):
         y.append(0)
 print(y)
 
-# use smote
+# Use smote
 sx, sy = smote_resample(x,y)
 
-# 3. Classification
+# Classification
 print(Counter(sy))
 x_train, x_test, y_train, y_test = train_test_split(sx, sy, test_size=0.3)
 x_train = normalize(np.asarray(x_train))
