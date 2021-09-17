@@ -1,3 +1,4 @@
+# Creating a system of authenticating users based on EEG data collected from the Physionet EEGBCI Dataset
 
 import os
 import keras
